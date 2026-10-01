@@ -16,20 +16,29 @@ distinto, y sin este archivo no se distinguen.
 - Incluye también los que **no funcionaron**. Suelen ser los más útiles de leer.
 - `Modelo` y `Herramienta` en todos. Si cambiaste de una a otra a mitad, se nota aquí.
 
-Borra el ejemplo de abajo cuando escribas el primero.
-
 ---
 
 ## Prompt 1
 
-**Modelo:** Opus 1M xHigh
+**Modelo:** Claude Opus 5.5
 **Herramienta:** Claude Code
 
 ```
-Este es el ejemplo. Bórralo.
+Necesito que realices la spec de lo que el sistema hace hoy solamente en la vertical de cuentas y acceso (registro, inicio de sesión, sesión y perfil) y sólo sobre esa vertical. No continues con otras. Tener cuenta las dos capas: frontend (pantallas de acceso, el estado de sesión, la protección de rutas, etc) como en el backend (rutas, controladores, modelo de usuario, validadores, middlewares, etc).
+Dejarla en un archivo versionado del proyecto (docs/spec-viva/mmg.md)
 
-El prompt va aquí dentro, entero y con sus saltos de línea,
-para que se sepa dónde empieza y dónde acaba.
+También necesito que vayas guardando cada prompt que charlando vayamos en el archivo PROMPTS.md, ordenados por ocurrencia (cual fue primero, cual siguiente, etc)
+
+Seguir el siguiente formato para cada spec:
+- Arriba, un ## Purpose, en una o dos frases. Debe explicar para qué existe esta capability.
+- Debajo, ## Requirements. De este se deben desprender los distintos ### Requirement: en los que el sistema SHALL hacer algo.
+- Bajo cada requisito, al menos un #### Scenario: de cuatro almohadillas, con dos viñetas: **WHEN** y **THEN** (sin GIVEN, ya que forma parte del WHEN)
+Escribir la spec en español, salvo las mayúsculas de la RFC.
+
+Reglas que no se deben romper:
+- Nada de ADDED, MODIFIED ni REMOVED, ya que no estamos construyendo un delta
+- Sin observaciones técnicas. Solo comportamiento observable desde fuera. Ni un nombre de clase, ni nombre un de archivo, ni una ruta de código. En la API, observable es la petición y la respuesta. En la pantalla, observable es lo que una persona ve y puede hacer.
+- No modifiques código: solo se busca crear la spec del código existente AS-IS
 ```
 
-**Qué salió:** (opcional, una línea) funcionó a la primera / tuve que insistir / me inventó una ruta que no existe.
+**Qué salió:** spec de cuentas y acceso en `docs/spec-viva/mmg.md`, contrastada con peticiones reales a la API.
