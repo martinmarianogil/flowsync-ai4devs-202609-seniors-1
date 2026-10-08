@@ -1,10 +1,12 @@
 <!-- Generado desde la lección de ejercicio del módulo: no se edita a mano. -->
 
-# Ejercicio FlowSync: mide qué está probado de verdad
+# Ejercicio FlowSync: escribe la spec de lo que ya funciona
 
-Es la última lección del módulo y la que más se subestima: **leerla** son nueve minutos, **hacerla** lleva bastante más (10 de entorno e instalación y unos 45 de la tarea), más unos 5 si abres las lecturas mínimas. No la abras la noche anterior a las 23:50.
+Es la última lección del módulo y la que más se subestima. Leerla son doce minutos; **hacerla, unos 70** (10 de entorno, 15 de instalación y sandbox, 45 de la tarea). No la abras la noche anterior a las 23:50.
 
-Cuatro partes. La primera explica cómo funciona el módulo, y conviene leerla aunque tengas prisa. La segunda deja el entorno listo. La tercera es la tarea, que es la que lleva tiempo de verdad. La cuarta es cómo se entrega.
+Cuatro partes. La primera explica cómo funciona el módulo, y conviene leerla aunque tengas prisa. La segunda deja el entorno listo y te familiariza con la herramienta en un sandbox. La tercera es la tarea, que es la que lleva tiempo de verdad. La cuarta es cómo se entrega.
+
+> Este módulo tiene **setup de herramienta**: hay que llegar con **OpenSpec instalado y funcionando**. Si algo falla, avisa a tu TA con antelación: no lo dejes para el minuto 1 del directo.
 
 ---
 
@@ -14,90 +16,109 @@ Hay tres momentos, y saberlos cambia cómo aprovechas cada uno.
 
 **1. Lo intentas tú.** Sobre el proyecto de abajo, con tu agente, con el reloj puesto. Entregas lo que te salga, **con lo que tenga**. La entrega a medias no es un problema: este paso no se puntúa por completarlo.
 
-**2. Lo ves resuelto en el directo.** El mentor hace este mismo trabajo, sobre este mismo proyecto. Si no te salió, ahí ves que se puede y cómo. Por eso conviene **mirar sin teclear**: lo vas a repetir con calma después.
+**2. Lo ves resuelto en el directo.** El mentor hace este mismo ejercicio, sobre este mismo proyecto y sobre la misma superficie. Si no te salió, ahí ves que se puede y cómo. Por eso conviene **mirar sin teclear**: lo vas a repetir con calma después.
 
 **3. Lo replicas.** Los prompts que use el mentor te llegan por escrito. Con ellos vuelves a tu entorno y rehaces el recorrido, que es donde se asienta.
 
-> ⚠️ **En el paso 3 no esperes salidas idénticas, y no es un fallo tuyo.** El agente no es determinista: con el mismo prompt y el mismo código cambian los nombres de las variables, la redacción y hasta cuántas filas te devuelve una tabla. Lo que se repite es **la forma del recorrido**, no el texto.
+> ⚠️ **En el paso 3 no esperes salidas idénticas, y no es un fallo tuyo.** El agente no es determinista: con el mismo prompt y el mismo código cambian la redacción, el orden y hasta cuántos requisitos escribe. Lo que se repite es **la forma del recorrido**, no el texto.
 
 ---
 
 ## 🛠️ Deja el entorno listo
 
+> Aquí dejas el entorno listo y te **familiarizas con OpenSpec en un sandbox desechable**, no en el repo del proyecto: que la herramienta no sea lo nuevo cuando empiece el directo. **La tarea de más abajo no necesita OpenSpec instalado**, pero el directo sí, así que este paso no se salta.
+
+### 1. Entorno base (10 min)
+
 **Primero, lo que necesita tu máquina.** El proyecto funciona en **macOS** y en **Linux**, tal cual, y en **Windows dentro de WSL** (Windows Subsystem for Linux, el Linux que corre dentro de Windows). **En PowerShell no**: los atajos del `Makefile` están escritos para la terminal de macOS y Linux, así que ahí fallan aunque consigas instalar `make`.
 
 > 🪟 **Si trabajas en Windows, haz todo lo de esta lección dentro de la terminal de Ubuntu de WSL**: el clon, Node y `make`. Lo que tengas instalado en Windows no existe dentro de WSL, y al revés. Y clona el proyecto dentro de tu carpeta de Linux (`~/…`), no en `/mnt/c`: desde ahí `npm install` va muy lento. Si aún no tienes WSL, se instala con `wsl --install` desde PowerShell **abierto como administrador**, según la [guía oficial de Microsoft](https://learn.microsoft.com/es-es/windows/wsl/install).
 
-### 1. Node.js 24 o superior
+- [ ] **Node.js 24 o superior**: `node -v` responde `v24` o más. Con la 20 el proyecto no arranca (`make setup` se para con `Unknown file extension ".ts"`); con la 22 arranca, pero con una pantalla de avisos `EBADENGINE` porque el proyecto pide la 24. La versión **LTS** (*long term support*, la de soporte largo) de [nodejs.org/en/download](https://nodejs.org/en/download) cumple. *(OpenSpec, que instalas en el paso 2, pide la 20.19: con la 24 vas sobrado para los dos.)*
+- [ ] **`make`**: `make --version` responde con un número. Si no: en macOS, `xcode-select --install`; en Linux y en WSL con Ubuntu, `sudo apt install make`.
 
-`node -v` responde `v24` o más. Con la 20 el proyecto no arranca (`make setup` se para con `Unknown file extension ".ts"`); con la 22 arranca, pero con una pantalla de avisos `EBADENGINE` porque el proyecto pide la 24. La versión **LTS** (*long term support*, la de soporte largo) de [nodejs.org/en/download](https://nodejs.org/en/download) cumple.
-
-### 2. `make`
-
-`make --version` responde con un número. Si no: en macOS, `xcode-select --install`; en Linux y en WSL con Ubuntu, `sudo apt install make`.
-
-### 3. Tu fork, en la rama de partida
-
-Repo del proyecto en la rama **`s4/start`**, **sobre tu propio fork** de [`github.com/LIDR-academy/flowsync-ai4devs-202609-seniors-1`](https://github.com/LIDR-academy/flowsync-ai4devs-202609-seniors-1). Sobre un clon directo del repo del curso **no tienes permiso de push**, y lo descubrirías al intentar subir tu trabajo.
+- [ ] **Trabaja sobre tu propio fork.** Si has intentado subir tus cambios y GitHub te los ha rechazado, no es un fallo tuyo: **no tienes permiso de escritura sobre el repo del curso, y no deberías tenerlo.** La solución son dos minutos.
 
 ```bash
 # 1. Fork desde la web: botón "Fork" en github.com/LIDR-academy/flowsync-ai4devs-202609-seniors-1
 
-# 2a. Si AÚN NO has clonado: clona TU fork (no el del curso)
+# 2a. Si AÚN NO has clonado: clona tu fork
 git clone git@github.com:<tu-usuario>/flowsync-ai4devs-202609-seniors-1.git
 cd flowsync-ai4devs-202609-seniors-1
 git remote add upstream git@github.com:LIDR-academy/flowsync-ai4devs-202609-seniors-1.git
 
-# 2b. Si YA clonaste el del curso: no vuelvas a clonar, recoloca los remotos
+# 2b. Si YA clonaste el del curso: no vuelvas a clonar, solo recoloca los remotos
 git remote rename origin upstream
 git remote add origin git@github.com:<tu-usuario>/flowsync-ai4devs-202609-seniors-1.git
 
-# 2c. Si ya venías trabajando sobre tu fork: solo comprueba que están los dos
-git remote -v          # origin = TU fork · upstream = el repo del curso
+# 2c. Si YA clonaste tu propio fork: solo te falta el upstream
+git remote add upstream git@github.com:LIDR-academy/flowsync-ai4devs-202609-seniors-1.git
 
-# 3. Trae las ramas nuevas del curso y colócate en la de este módulo
+# Comprueba cómo han quedado: origin = tu fork, upstream = el del curso
+git remote -v
+
+# 3. Trae las ramas del curso y colócate en la de hoy
 git fetch upstream
-git checkout -b s4/start upstream/s4/start
+git checkout -b s3/start upstream/s3/start
 
-# 4. Comprueba que el fork quedó bien montado: esto tiene que funcionar
-git push -u origin s4/start
+# 4. A partir de aquí tus cambios van a TU fork
+git push -u origin s3/start
 ```
 
-> 📌 **Un fork es una foto del momento, y el curso sigue publicando ramas.** Las que aún no se han publicado **todavía no existen** en tu fork, y tu fork no se entera solo: por eso el `git fetch upstream` va antes del `checkout`. Si te contesta *"pathspec did not match"*, casi siempre es esto. Si te contesta *"'upstream' does not appear to be a git repository"*, te falta el `git remote add` del paso 2. Y si el `push` del paso 4 te rechaza por permisos, es que `origin` sigue apuntando al repo del curso: vuelve al 2b.
+> 📌 **Si te sale `Permission denied (publickey)`, es SSH, no el fork.** Los comandos de arriba usan URLs SSH (`git@github.com:…`), que necesitan una clave subida a tu cuenta de GitHub. Si no la tienes, o [súbela ahora](https://docs.github.com/es/authentication/connecting-to-github-with-ssh) (cinco minutos, y te sirve para el resto del curso), o cambia las tres URLs por su versión HTTPS (`https://github.com/<usuario>/flowsync-ai4devs-202609-seniors-1.git`). Cualquiera de las dos vale; lo que no vale es descubrirlo el día del directo.
 
-> 📌 **Si te sale `Permission denied (publickey)`, es SSH, no el fork.** Los comandos de arriba usan URLs SSH (`git@github.com:…`), que necesitan una clave subida a tu cuenta de GitHub. O [súbela ahora](https://docs.github.com/es/authentication/connecting-to-github-with-ssh), que son cinco minutos y te sirve para el resto del curso, o cambia las URLs por su versión HTTPS (`https://github.com/<tu-usuario>/flowsync-ai4devs-202609-seniors-1.git` y `https://github.com/LIDR-academy/flowsync-ai4devs-202609-seniors-1.git`). Cualquiera de las dos vale; lo que no vale es descubrirlo el día del directo.
+> 📌 **Un fork es una foto del momento, y el curso sigue publicando ramas.** Las ramas que aún no se han publicado **todavía no existen** en tu fork, y tu fork no se entera solo. Antes de arrancar el trabajo de cada módulo, corre **`git fetch upstream`** y saca la rama nueva desde ahí (`git checkout -b sN/start upstream/sN/start`). Si haces checkout de una rama y te contesta *"pathspec did not match"*, casi siempre es esto y se arregla con un `fetch`.
 
-### 4. Dependencias instaladas y el proyecto levanta
+- [ ] Rama **`s3/start`** en tu fork: trae el harness del proyecto, el PRD, y el **backlog del equipo**.
+- [ ] **Abre `docs/backlog/`**: están las historias del equipo repartidas en épicas, con sus criterios de aceptación. Algunas traen además su descomposición en tickets. Es el artefacto que dirige la implementación, y lo tienes entero en el repo.
+- [ ] **Abre también `docs/backlog/README.md` y busca el orden priorizado.** No lo leas por encima: mira **cuál va la primera** y qué razón da el propio README para ponerla ahí.
 
-Desde la raíz del proyecto. Este es el paso que conviene adelantar, así que hazlo hoy: descubrir que algo no compila con el directo empezado es el peor momento posible.
+> 📌 **El backlog trae más historias de las que se refinan en una demo en vivo.** No te falta nada ni te has perdido una clase. Una demo existe para **enseñarte que algo es posible y cómo se hace**, no para producir delante de ti el inventario completo de lo que te llevas: refinar un backlog entero en directo serían horas de repetir el mismo gesto. El equipo ya tenía su backlog; lo que se enseña es **cómo se construye uno**.
+
+- [ ] Claude Code arranca y lee tu contexto.
+- [ ] **El proyecto levanta entero, backend y frontend, y puedes iniciar sesión en la interfaz.** Desde la raíz del proyecto. Compruébalo ahora: descubrir que el frontend no compila es un mal comienzo.
+
+  ```bash
+  make setup   # solo la primera vez: instala backend y frontend, crea los dos .env, genera la clave y migra la base de datos
+  make start   # levanta el backend en http://localhost:3333 y el frontend en http://localhost:5173, a la vez
+  ```
+
+  `make start` **se queda ocupando la terminal**: arranca los dos servidores juntos, `Ctrl-C` los para, y si uno se cae se lleva al otro. `make` a secas lista todos los atajos. **Comprueba en otra terminal que viven**: `curl -s localhost:3333/` devuelve `{"hello":"world"}`, y `http://localhost:5173` en el navegador enseña FlowSync. El frontend busca el backend en `http://localhost:3333`; si lo levantas en otro puerto, cambia `VITE_API_URL` en `frontend/.env`.
+
+  > 🔧 **Si algo falla, casi siempre es una de estas:** `make: command not found` → falta `make`; `Unknown file extension ".ts"` durante `make setup` → tu Node es anterior a la 22; `❌ Faltan dependencias. Ejecuta primero: make setup` → te saltaste el `setup`; un puerto en uso → tienes otro proyecto corriendo en el 3333 o en el 5173: ciérralo y vuelve a lanzar.
+  >
+  > **Sin `make`**, los mismos pasos a mano: `npm install` dentro de `backend/` y de `frontend/`, copia en cada una su `.env.example` a `.env`, y en `backend/` ejecuta `node ace generate:key` y `node ace migration:run`. Después, `npm run dev` en cada una, en dos terminales.
+
+> 📌 **Si vas a buscar esto en un tablero, no lo busques: manda el repositorio.** Las historias y sus tickets se materializaron en su momento como issues en el tablero `FLOW`, pero un tablero compartido se limpia entre sesiones, así que **no cuentes con encontrarlos ahí**. El propio backlog lo deja escrito (`docs/backlog/README.md`): las issues y subtareas vienen marcadas como *«hay que recrearlas»*, y **si el tablero y el repositorio se contradicen, manda el repositorio**. Un tablero sirve para seguir el trabajo (quién lo tiene, en qué estado va); los criterios de aceptación viven en el repo, que es lo que has abierto arriba. Si quieres llevar tu propio seguimiento en Jira, recréalos tú con el MCP que ya tienes conectado.
+
+### 2. Instalar OpenSpec y explorarlo en un sandbox (15 min)
+No lo inicialices en FlowSync: créate una **carpeta desechable**, fuera del repo, para ver cómo funciona sin ensuciar el proyecto.
 
 ```bash
-make setup   # solo la primera vez: instala backend y frontend, crea los dos .env, genera la clave y migra la base de datos
-make start   # levanta el backend en http://localhost:3333 y el frontend en http://localhost:5173, a la vez
+# 1. Instalar la CLI (paquete npm global)
+npm install -g @fission-ai/openspec@latest
+openspec --version          # debe responder con un número de versión
+
+# 2. Sandbox desechable, FUERA de cualquier proyecto
+cd ~                        # imprescindible: vienes de dentro de flowsync-ai4devs-202609-seniors-1
+mkdir openspec-sandbox && cd openspec-sandbox
+openspec init               # elige "Claude Code" en el asistente; acepta el resto
+
+# 3. Mira la estructura que creó
+ls -R openspec/             # dos carpetas (specs/ y changes/) y un config.yaml
 ```
 
-`make start` **se queda ocupando la terminal**: arranca los dos servidores juntos, `Ctrl-C` los para, y si uno se cae se lleva al otro. `make` a secas lista todos los atajos. **Comprueba en otra terminal que viven**: `curl -s localhost:3333/` devuelve `{"hello":"world"}`, y `http://localhost:5173` en el navegador enseña FlowSync. El frontend busca el backend en `http://localhost:3333`; si lo levantas en otro puerto, cambia `VITE_API_URL` en `frontend/.env`.
+> ⚠️ **El `cd ~` no es decorativo.** Vienes del paso 1, y ahí te quedaste **dentro** de `flowsync-ai4devs-202609-seniors-1`. Sin salir antes, el `openspec init` inicializaría el repo del proyecto: escribiría `openspec/` y `.claude/commands/opsx/` dentro de él, que es justo lo que este paso te dice que no hagas todavía. Si ya te ha pasado, borra esas dos carpetas del repo y vuelve a empezar en `~`.
 
-> 🔧 **Si algo falla, casi siempre es una de estas:** `make: command not found` → falta `make`; `Unknown file extension ".ts"` durante `make setup` → tu Node es anterior a la 22; `❌ Faltan dependencias. Ejecuta primero: make setup` → te saltaste el `setup`; un puerto en uso → tienes otro proyecto corriendo en el 3333 o en el 5173: ciérralo y vuelve a lanzar.
->
-> **Sin `make`**, los mismos pasos a mano: `npm install` dentro de `backend/` y de `frontend/`, copia en cada una su `.env.example` a `.env`, y en `backend/` ejecuta `node ace generate:key` y `node ace migration:run`. Después, `npm run dev` en cada una, en dos terminales.
+- [ ] **Abre Claude Code *dentro* de `openspec-sandbox/`**, escribe `/` y **confirma que aparecen** `/opsx:propose`, `/opsx:apply`, `/opsx:archive`. Que sea dentro del sandbox importa: `openspec init` instala los comandos en el `.claude/` **de ese proyecto**, no en tu máquina. Si abres Claude Code en otra carpeta no verás ninguno, y no será un fallo de instalación. *(Si estás dentro y aun así no aparecen, reinicia Claude Code por completo: los slash commands se cargan al arrancar.)*
+- [ ] **Fíjate en las dos carpetas que crea y en que `specs/` nace vacía**: `specs/` es la verdad sobre cómo se comporta el sistema, `changes/` es lo que está en curso. Esa separación es la que sostiene el vocabulario `propose → apply → archive`. Junto a ellas verás un **`config.yaml`**: ahí es donde luego se le cuenta a OpenSpec el stack y las convenciones del proyecto. *(Si un tutorial te habla de un `openspec/project.md`, ya no existe: se retiró en la 1.0. No es un fallo de tu instalación.)*
 
-### 5. La suite de tests corre y sale en verde
+### 3. Crea tu rama
 
-Se lanza desde `backend/` con `npm test` (desde la raíz: `(cd backend && npm test)`, con los paréntesis, que te devuelven a ella). Debe terminar sin ningún test en rojo. Si algo falla aquí, es tu entorno y conviene resolverlo antes del directo, no en el minuto 1.
-
-### 6. Abre `openspec/specs/`
-
-Localiza la spec viva de la gestión de tareas. Cada carpeta de ahí dentro es una **capability**: una parcela de comportamiento del sistema, escrita como **debe comportarse** y no como está programada. Dentro viven los **requisitos** y, colgando de cada uno, los **scenarios**, los ejemplos concretos contra los que se verifica. Ten claro dónde están antes de empezar, porque la tarea sale de ahí.
-
-### 7. Claude Code arranca y lee tu contexto
-
-**Abre `.claude/agents/` y anota qué subagentes tienes ya definidos**, aunque la respuesta sea "ninguno": es la carpeta donde vas a trabajar, y saber si está vacía o no es la comprobación. Si no hay ninguno de revisión, no te bloquea: un subagente no es más que un archivo Markdown con su propio prompt y sus permisos, y montarlo lleva un minuto.
-
-### 8. Crea tu rama
+Sal del sandbox y vuelve a tu fork de FlowSync: la rama va **en el proyecto**, no en el sandbox. Ya con el fork abierto:
 
 ```bash
-git checkout -b trazabilidad-<tus-iniciales>
+git checkout -b spec-viva-<tus-iniciales>
 ```
 
 Ahí va todo lo que produzcas.
@@ -106,89 +127,77 @@ Ahí va todo lo que produzcas.
 
 ## 📋 La tarea
 
-> ⚠️ **Ve guardando cada prompt tal cual lo lanzas, desde el primero.** Se entregan junto con la matriz, y no valen reconstruidos: el prompt que arreglas mentalmente diez minutos después no es el que lanzaste, y es justo la diferencia que interesa mirar.
+> ⚠️ **Ve guardando cada prompt tal cual lo lanzas, desde el primero.** Se entregan junto con la spec, y no valen reconstruidos: el prompt que arreglas mentalmente diez minutos después no es el que lanzaste, y es justo la diferencia que interesa mirar.
 
 ### El encuadre, y no es un consuelo
 
-**El entregable no es la matriz completa. Son las tres líneas de la parte B**, y esas se escriben igual de bien con la matriz a medias.
+Vas a escribir la spec de un código que **ya está escrito y ya funciona**. No propones nada, no cambias una línea: lees lo que hay y escribes lo que hace **hoy**.
 
-De hecho, si terminas con la matriz llena y ninguna casilla en duda, vuelve a mirarla: casi nadie sale de esta tarea sin al menos un scenario del que no sabe qué decir, y ese es el interesante.
+Suena a tarea de documentación, y ahí está la trampa: no lo es. Intentar decir en `WHEN/THEN` lo que hace un código es la forma más barata que existe de auditarlo, porque te obliga a decidir, requisito a requisito, **qué es contrato y qué es casualidad**. Y esa decisión, unas cuantas veces, no vas a poder tomarla. Esas veces son el ejercicio.
 
-**El reloj tampoco es una crueldad de diseño.** Verificar de verdad no compite con escribir la funcionalidad: compite con el rato que hay antes de dar algo por terminado. Lo que sale en 45 minutos es exactamente la parte que depende de tener criterio, y no la que depende de tener una herramienta mejor.
+**El entregable no es la spec. Son las tres listas de la parte B**, y esas se escriben igual de bien con la spec a medias.
 
-**Sobre qué se hace:** sobre el requisito **«Lo que cada tarea muestra de su responsable»** de la spec viva de la gestión de tareas, `openspec/specs/tasks/spec.md`, en el proyecto que acabas de montar. Es el mismo requisito sobre el que trabaja el mentor en el directo: tú lo intentas antes, con tus propios prompts.
+**El reloj tampoco es una crueldad de diseño.** Escribir la spec de un sistema entero no cabe en una tarde de nadie, y por eso el ejercicio va sobre una superficie pequeña. Lo que sale en 45 minutos es exactamente la parte que depende de tener criterio, no la que depende de tener una herramienta mejor.
 
-**Dónde va cada cosa:**
+> 📌 **Para la tarea no hace falta OpenSpec, y no lo inicialices en el proyecto.** No se lanza ningún comando, no se inicializa nada y no se toca la configuración: solo se lee código que ya está ahí y se escribe un archivo de texto con el formato de una spec viva. El `openspec init` sobre el proyecto de verdad llega en el directo, y hacerlo antes te deja carpetas a medias que después estorban.
 
-- La **matriz de trazabilidad** y las **tres líneas** van juntas en `docs/verificacion/<tus-iniciales>.md`. Es una carpeta nueva: la crea tu archivo.
-- Los **tests que escribas** van en `backend/tests/functional/tasks/`, siguiendo el estilo de los que ya hay en `backend/tests/functional/auth/`. No toques nada fuera de `backend/tests/`.
+**Sobre qué se hace:** sobre el vertical de **cuentas y acceso** del proyecto que acabas de dejar listo (registro, inicio de sesión, sesión y perfil), que es lo que ya está construido de punta a punta. **Entero, en sus dos capas**, igual que lo hace el mentor en el directo: en el backend, sus rutas, sus controladores, el modelo de usuario, sus validadores y sus middlewares; en el frontend, las pantallas de acceso, el estado de sesión y la protección de rutas. Los prompts los escribes tú.
 
-Trabájalo en la rama propia que creaste al dejar el entorno listo.
+**Dónde se deja:** en `docs/spec-viva/<tus-iniciales>.md`. La carpeta todavía no existe en el repo; la crea tu archivo.
 
-> ⚠️ **Resérvale un rato de verdad y ponte el reloj.** Son unos 45 minutos y hay que pararlos. Dejarlo para la noche de antes te deja con una matriz rellenada de oído, que es justo lo que la tarea quiere que veas, pero se aprovecha mejor con tiempo de pensarlo.
+> ⚠️ **Resérvale un rato de verdad y ponte el reloj.** Son unos 45 minutos y hay que pararlos. Dejarlo para la noche de antes te deja con una spec larga y sin comprobar, que es justo lo que la tarea quiere que veas, pero se aprovecha mejor con tiempo de pensarlo.
 
 ---
 
-### 🅰️ Parte A: la matriz y los tests que faltan, con reloj
+### 🅰️ Parte A: la spec, con reloj
 
-Con un agente, y sobre el requisito **«Lo que cada tarea muestra de su responsable»**, produce dos cosas y déjalas escritas en **archivos versionados del repositorio**, no en el chat.
+Con un agente, escribe la spec de lo que el sistema hace hoy y déjala en **un archivo versionado del proyecto**, no en el chat.
 
-Un **requisito** de una spec viva es una regla de comportamiento del sistema, y de él cuelgan varios **scenarios**: los ejemplos concretos, con su par de *cuándo* y *entonces*, contra los que esa regla se comprueba. Un grupo de requisitos que cubre una parcela entera de comportamiento es una **capability**, y la matriz se hace por requisito y no por capability porque el requisito es la unidad que cabe en un rato.
+**Las dos capas, y solo ese vertical.** Lo que pasa por la API y lo que se ve en pantalla, y nada que no sea cuentas y acceso, aunque el agente se ofrezca a seguir. Que el agente escriba las dos capas es rápido; lo que no cabe en el reloj es **comprobarlo todo después**, que es donde está el ejercicio. Cuenta con no llegar a comprobar cada requisito: la parte B existe precisamente para decir hasta dónde llegaste.
 
-**Solo ese requisito.** No la capability entera, aunque quepa y aunque el agente se ofrezca a cubrirla. Es uno cuyo incumplimiento le importa a alguien: dice qué datos de una persona salen junto a cada tarea, y eso es lo primero que se rompe sin que nadie lo vea.
+**El formato lo fija esta lección, y no es negociable:**
 
-#### A.1 · La matriz de trazabilidad
+- Arriba, un `## Purpose` de una o dos frases: para qué existe esta capability.
+- Debajo, `## Requirements`, y colgando de él `### Requirement:` en los que el sistema **SHALL** hacer algo.
+- Bajo cada requisito, al menos un `#### Scenario:` de cuatro almohadillas, con dos viñetas: `- **WHEN**` y `- **THEN**`. No hay casilla para el `GIVEN`: la precondición se mete dentro del `WHEN`.
+- En castellano, salvo las mayúsculas de la RFC.
 
-**El formato lo fija esta lección, y no es negociable**: una fila por scenario, con estas cuatro casillas, y **dos números arriba del todo**.
+**Y tres reglas duras, que son las que separan este ejercicio de escribir documentación:**
 
-Los dos números son **cuántos scenarios tiene ese requisito** y **cuántos resultaron estar cubiertos**. El segundo se escribe al final; el primero, al principio.
+1. **Nada de `ADDED`, `MODIFIED` ni `REMOVED`.** Eso es el vocabulario de un delta, y esto no es un delta: es la verdad actual del sistema. Si tu archivo tiene una de esas secciones, has escrito otra cosa.
+2. **Solo comportamiento observable desde fuera.** Ni un nombre de clase, ni un nombre de archivo, ni una ruta de código. En la API, observable es la petición y la respuesta. En la pantalla, observable es lo que una persona ve y puede hacer.
+3. **No toques el código.** Ni siquiera para arreglar lo que encuentres, y sobre todo para eso: lo que encuentres es material de la parte B.
 
-1. **El scenario, en una línea.** Qué se espera y en qué situación. Si no cabe en una línea, es que estás juntando dos.
-2. **Qué prueba lo cubre, nombrada tal cual aparece en la suite.** Sin el nombre concreto, la casilla se queda vacía: *"seguro que algo lo cubre"* no es una fila.
-3. **Cubierto · No cubierto · No lo sé.** Los tres estados existen, y el tercero no es un fallo tuyo: es el resultado más informativo de los tres.
-4. **Si pusiste "no lo sé", qué te faltó para decidirlo.** Media línea. Suele ser una de dos: no encontraste dónde se comprueba, o encontraste algo que se le parece y no dice exactamente lo mismo.
-
-> ⚠️ **Un nombre de test no es una prueba de cobertura.** Un test puede llamarse igual que el scenario y comprobar otra cosa, o comprobar la mitad. Para marcar *cubierto* hay que **abrir el test y leer lo que afirma**. Es la casilla que más caro sale rellenar de oído, y es justo la que la tarea quiere que mires.
-
-#### A.2 · Los tests que faltan
-
-De las filas que quedaron en **No cubierto**, escribe los tests que faltan: **uno por scenario**, siguiendo el estilo de los que ya existen en el proyecto, y **sin tocar nada fuera de la carpeta de tests**.
-
-Después, ejecútalos.
-
-> ⚠️ **Pase lo que pase, no arregles el código, y no aflojes el test para que pase.** Si algo se pone rojo, se queda rojo y se entrega rojo: hoy toca saber qué está mal, no taparlo. Quien verifica no arregla, porque quien arregla deja de ver.
-
-> ⚠️ **Cuando suene el reloj, para. Aunque esté a medias.** Aunque falten filas, aunque haya tests sin escribir, aunque justo estuvieras a punto de comprobar una cosa.
+> ⚠️ **Cuando suene el reloj, para. Aunque esté a medias.** Aunque falten requisitos, aunque haya escenarios sin `THEN`, aunque justo estuvieras a punto de comprobar una cosa.
 >
-> Una matriz con cuatro filas rellenas y el resto en blanco **es información**: dice exactamente hasta dónde llegaste. Una fila completada de memoria diez minutos después es ruido con formato, y encima es indistinguible de la buena.
-
-> 📌 **Sobre qué proyecto se hace, cómo dejarlo listo y cómo se entrega, lo tienes en esta misma lección**, arriba y abajo de la tarea: el entorno antes, y los sitios donde dejar cada archivo, el plazo y el segundo archivo de la entrega, después.
-
-> ⚠️ **Ve guardando cada prompt tal cual lo lanzas, desde el primero.** Se entregan junto con la matriz, y no valen reconstruidos: el prompt que arreglas mentalmente diez minutos después no es el que lanzaste, y es justo la diferencia que interesa mirar.
+> Una spec en la que comprobaste seis de los requisitos que escribiste y dejaste dos a medias **es información**: dice exactamente hasta dónde llegaste. Una spec completada de memoria diez minutos después es ruido con formato, y encima es indistinguible de la buena.
 
 ---
 
-### 🅱️ Parte B: las tres líneas
+### 🅱️ Parte B: las tres listas
 
-Debajo de la matriz, en el mismo archivo, tres líneas anotadas. **Esta parte no se puede fallar**, y es la que hay que traer sí o sí.
+Debajo de la spec, en el mismo archivo. **Esta parte no se puede fallar**, y es la que hay que traer sí o sí.
 
-1. **Cuántos scenarios creías cubiertos antes de mirar, y cuántos lo estaban.** El primer número se escribe **antes** de lanzar el primer prompt, a ojo y sin abrir nada; el segundo, al final. Los dos tal cual salieron, sin redondear ni explicar.
+**1. Cuántos requisitos escribió el agente, y cuántos comprobaste tú abriendo el código.** Los dos números, tal cual salieron. No los redondees ni los expliques. Comprobar significa haber ido a mirar si el código hace eso; leer el requisito y que suene razonable no cuenta.
 
-2. **El scenario del que no supiste si era un hueco de test o un hueco de spec**, y en una frase, por qué. Son dos cosas distintas y se parecen mucho desde fuera: en un caso la regla está escrita y nadie la comprobó; en el otro, lo que creías que era la regla no está escrito en ninguna parte y lo estabas poniendo tú.
+**2. Las incoherencias que aparecieron al escribirla.** Una línea cada una, con **dónde se ve**. No las busques a propósito: aparecen solas, porque una regla que se cumple en casi todas partes canta en cuanto intentas escribirla como si se cumpliera siempre.
 
-3. **Algo que el scenario no decidía por ti y tuviste que decidir al escribir el test.** Un valor concreto, un límite, qué pasa cuando el dato viene vacío. Casi ningún scenario determina su test del todo, y el hueco que rellenaste sin darte cuenta es lo que más se parece a un defecto futuro.
+**3. Lo que no supiste decidir si era un bug o el contrato.** Al menos una, y en una frase, **qué dos lecturas se contradecían**. Esta es la lista que importa. No es lo que estaba mal: es lo que podría estar bien o mal según a quién le preguntes, y no había forma de decidirlo leyendo el código.
 
-> ⚠️ **Ninguna de las tres tiene respuesta correcta.** La segunda y la tercera son mejores cuanto más incómodas: un *"no supe si esto lo tenía que decidir yo"* honesto vale más que una matriz llena con seguridad fingida.
+> 🧠 **Por qué la tercera lista siempre tiene algo dentro, y por qué eso no es un fallo tuyo.** Una spec dice lo que el sistema hace visto **desde fuera**, y hay comportamiento que desde fuera no se distingue: dos sistemas que por dentro tratan el mismo dato de maneras completamente distintas pueden responder igual a las mismas peticiones. Hay otro que no se puede confirmar sin ejecutarlo y esperar, porque solo aparece al cabo de un rato o cuando algo se llena. Y hay un tercer grupo, el interesante: comportamiento que se ve perfectamente y **aun así no sabes si alguien lo decidió o simplemente salió así**.
+>
+> Dejar eso en el aire, marcado, es la respuesta correcta. Un contrato que se calla donde no sabe vale mucho más que uno que rellena con seguridad fingida.
+
+> ⚠️ **Ninguna de las tres tiene respuesta correcta.** La segunda y la tercera son mejores cuanto más incómodas: un *"no supe decidir entre estas dos lecturas"* honesto vale más que una spec completa escrita con seguridad.
 
 ---
 
 ### Cómo saber que la has hecho bien
 
-- **Las tres líneas están escritas y son concretas.** Si la tercera dice *"el scenario lo decidía todo"*, vuelve a mirar el test que escribiste: los valores que pusiste salieron de algún sitio, y ese sitio eras tú.
-- **Los dos números de la primera línea no coinciden.** Casi nunca coinciden, y eso no es un fallo tuyo: es el dato entero de la tarea.
-- **Hay al menos un *"no lo sé"* en la matriz.** Significa que abriste los tests en vez de fiarte de sus nombres.
-- **La matriz cabe en una pantalla.** Si no cabe, te saliste del requisito y estás cubriendo la capability entera otra vez.
-- **Hay algún test tuyo en rojo, o sabes decir por qué no lo hay.** Las dos respuestas valen; lo que no vale es no haberlo mirado.
+- **Las tres listas están escritas y son concretas.** Si la tercera está vacía, vuelve a mirar: es la respuesta que da alguien que aceptó la spec en vez de contrastarla contra el código.
+- **El número de comprobados es menor que el de escritos.** Casi siempre lo es, y no es un fallo tuyo: es el dato.
+- **En la spec no aparece ni un nombre de archivo ni un nombre de clase.** Si aparecen, describiste la implementación y no el comportamiento, y esa spec no sobrevive al primer refactor.
+- **La spec es del acceso y de nada más.** Si aparecen requisitos de las tareas o de cualquier otra parte, te saliste del vertical y estás escribiendo la spec del sistema entero otra vez.
 
 > Entrégalo con lo que tenga.
 
@@ -198,11 +207,10 @@ Debajo de la matriz, en el mismo archivo, tres líneas anotadas. **Esta parte no
 
 Todo lo que produzcas va en la rama que creaste en el último paso del entorno.
 
-**Un pull request desde tu fork**, con tres cosas dentro y ni una más:
+**Un pull request desde tu fork**, con dos cosas dentro y ni una más:
 
-1. **Tu archivo** de `docs/verificacion/`, con la matriz y las tres líneas.
-2. **Los tests** que hayas escrito, tal como quedaron: en verde, en rojo o a medias.
-3. **`prompts.md`**, en la raíz del proyecto, con la plantilla que la rama de partida trae en ese mismo archivo.
+1. **Tu archivo de spec** en `docs/spec-viva/`, con los requisitos y las tres listas.
+2. **`prompts.md`**, en la raíz del proyecto. Ya está ahí con la plantilla puesta.
 
 ```bash
 git add docs/verificacion backend/tests prompts.md
@@ -222,27 +230,28 @@ Con la rama empujada, GitHub te ofrece arriba el botón para abrir el pull reque
 
 ## 📚 Si vas justo de tiempo
 
-- Repasa las lecciones de este módulo sobre verificación y trazabilidad y sobre la revisión adversarial.
-- 📖 Un ejemplo de ADR de verdad: la [plantilla MADR](https://adr.github.io/madr/), unos 5 minutos, y basta con ver qué apartados tiene. Es la variante extendida; el curso trabaja con los cinco apartados del formato original.
-- 📖 Un vistazo a la [sintaxis de los diagramas de flujo en Mermaid](https://mermaid.js.org/syntax/flowchart.html): con entender cómo se declara un nodo y cómo se une con una flecha vas servido. El resto del material de apoyo está en la lección de recursos de este módulo.
+- Repasa las lecciones de este asíncrono sobre los dos caminos y sobre OpenSpec en profundidad.
+- 📖 OpenSpec: [*Getting started*](https://github.com/Fission-AI/OpenSpec/tree/main/docs) (~10 min, repo oficial).
+
+> ⚠️ **Telemetría**: OpenSpec envía estadísticas anónimas (nombres de comandos y versión). Para apagarla **en la shell actual**, `export OPENSPEC_TELEMETRY=0` o `export DO_NOT_TRACK=1`; eso dura lo que dure la terminal. Para apagarla **de forma permanente**, o metes ese `export` en tu `.zshrc`/`.bashrc`, o añades `"telemetry": { "enabled": false }` al config global de OpenSpec (`~/.config/openspec/config.json`). No hay subcomando de la CLI que lo haga por ti.
 
 ---
 
 ## ✅ Antes de conectarte, comprueba
 
 - [ ] Estás en la rama de partida, sobre **tu fork**, y `git push` funciona.
-- [ ] El proyecto levanta y la suite corre en verde.
-- [ ] **Traes el archivo de la tarea**, con su matriz (aunque esté a medias) y sus tres líneas.
-- [ ] Los tests que escribiste están commiteados **tal como quedaron**, sin maquillar.
+- [ ] El proyecto levanta entero, backend y frontend, y puedes iniciar sesión en la interfaz.
+- [ ] `openspec --version` responde, y los comandos aparecen dentro del sandbox.
+- [ ] **Traes el archivo de la tarea**, con su spec (aunque esté a medias) y sus tres listas.
 - [ ] **`prompts.md` está relleno**, con modelo y herramienta en cada bloque.
 - [ ] **El pull request está abierto.**
 
-> Trae el trabajo tal como quedó, sin maquillarlo: lo que le falta es la mitad de lo interesante.
+> Trae el archivo tal como quedó, sin maquillarlo: lo que le falta es la mitad de lo interesante.
 
 ---
 
-## 🎯 Qué te llevas del Módulo 4
+## 🎯 Qué te llevas del Módulo 3
 
-**El modelo mental**: *tests verdes ≠ correcto*; **verificar** es trazabilidad (ticket→criterio→prueba→código); la **revisión adversarial** refuta en vez de validar (subagente read-only, contrastado contra la spec viva); y la **documentación viva** vive en el repo: el diagrama, el contrato de la API y el README se **generan** de lo que existe, y el ADR se **decide** y se escribe una vez. Versionada, y regenerada en CI lo que se genera. El ancla de todo es la **spec viva**: mientras esté al día, lo que cuelga de ella también.
+**El modelo mental**: dos caminos (delegación directa vs OpenSpec) y **el criterio para elegir**, sobre tres casos distintos; el loop **Explore → Plan → Execute** con el gate humano en el plan; y OpenSpec como **spec viva + delta** (como Git para requisitos), donde el momento humano es revisar el **contrato antes** del código. Y una lección de backlog: **un quick win que todavía no puedes construir no es lo primero**, porque el orden real lo fijan el valor y la dependencia.
 
-**Lo que queda en el proyecto**: una **matriz de trazabilidad** que dice qué criterio tiene prueba y cuál no, los **bugs que el adversario cazó con la suite en verde** corregidos y con la prueba que faltaba añadida, y **documentación viva** (arquitectura, ADR, OpenAPI, README) versionada en el repo y publicable desde CI. Un proyecto entregable, no "casi".
+**Lo que queda en el proyecto**: una **spec viva** en `openspec/specs/`, con sus changes archivados y trazables, de forma que se pueda leer qué se decidió, cuándo y por qué. Eso es lo que distingue haber implementado algo de haberlo dejado documentado en el mismo gesto.
