@@ -16,20 +16,60 @@ distinto, y sin este archivo no se distinguen.
 - Incluye también los que **no funcionaron**. Suelen ser los más útiles de leer.
 - `Modelo` y `Herramienta` en todos. Si cambiaste de una a otra a mitad, se nota aquí.
 
-Borra el ejemplo de abajo cuando escribas el primero.
-
 ---
 
 ## Prompt 1
 
-**Modelo:** Opus 1M xHigh
+**Modelo:** Opus 5.5
 **Herramienta:** Claude Code
 
 ```
-Este es el ejemplo. Bórralo.
-
-El prompt va aquí dentro, entero y con sus saltos de línea,
-para que se sepa dónde empieza y dónde acaba.
+esisto que armemos una matriz de trazabilidad para informar si cada escenario tiene un test que lo
+  cubre y cual es. En caso que ese escenario no esté cubierto por ningún test, crear un test que lo haga.
+  Vamos a trabajar unicamente sobre el requisito «Lo que cada tarea muestra de su responsable», que está
+  en openspec/specs/tasks/spec.md. Ignoraremos el resto de los requisitos.
 ```
 
-**Qué salió:** (opcional, una línea) funcionó a la primera / tuve que insistir / me inventó una ruta que no existe.
+**Qué salió:** matriz con los 3 scenarios sin cubrir, 3 tests nuevos; uno en rojo (la lista expone el email del responsable).
+
+---
+
+## Prompt 2
+
+**Modelo:** Opus 5.5
+**Herramienta:** Claude Code
+
+```
+  Revisar los test generados backend/tests/functional/tasks/assignee.spec.ts y llevar al estilo de los que ya hay en backend/tests/functional/auth/. No toques nada fuera de backend/tests/. Agregar test para los casos no felices, en los que no se cumpla la spec. (Ej: que devuelva una tarea con el email de la cuenta y que tire la excepción correspondiente). Cubrir los casos que van más alla de los casos felices.
+```
+
+**Qué salió:** 15 tests al estilo de `auth/`, 3 en rojo (lista, crear y cambiar estado exponen el email del responsable).
+
+---
+
+## Prompt 3
+
+**Modelo:** Opus 5.5
+**Herramienta:** Claude Code
+
+```
+sí, actualizá solo mmg.md y prompts.md
+```
+
+**Qué salió:** matriz y prompts al día con la nueva suite.
+
+---
+
+## Prompt 4
+
+**Modelo:** Opus 5.5
+**Herramienta:** Claude Code
+
+```
+  Modificar en "las tres líneas" los siguientes detalles:
+  En 1 (la primer línea), aclarar que mi número era 0 (no asumí que hubiera tests)
+En 2 (Hueco de test o de spec): Agregar que solo propuso, en la primer iteración, test sobre casos felices. En otra iteración se agregó más cobertura y casos border
+En 3, dejarla tal cual
+```
+
+**Qué salió:** líneas 1 y 2 de la parte B ajustadas.
